@@ -2,7 +2,7 @@ FROM node:lts-alpine
 
 WORKDIR /app
 
-ENV REDIS_HOST=redis
+ENV REDIS_HOST=audiophile-redis-1
 
 COPY ./dist .
 

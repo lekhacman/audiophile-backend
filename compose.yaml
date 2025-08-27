@@ -5,6 +5,9 @@ services:
     ports: ["3000:3000"]
     volumes:
       - ./tmp:/app/storage
+    depends_on:
+      redis:
+        condition: service_started
   redis:
     image: "redis:alpine"
     ports: ["6379:6379"]
