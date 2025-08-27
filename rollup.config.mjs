@@ -15,9 +15,9 @@ export default {
     include: "src/**",
   },
   plugins: [
+    nodeResolve(),
     json(),
     commonjs(),
-    nodeResolve(),
     ...(process.env.ROLLUP_WATCH === "true" ? [run()] : [terser()]),
   ],
 };
