@@ -1,9 +1,11 @@
 import Fastify from "fastify";
-
 import Redis from "ioredis";
+import fs from "fs/promises";
 
-const redis = new Redis(6379, process.env.REDIS_HOST || 'localhost');
+const redis = new Redis(6379, process.env.REDIS_HOST || "localhost");
 redis.set("mykey", "myvalue");
+
+fs.writeFile("storage/test.txt", "mounting test");
 
 const fastify = Fastify({ logger: true });
 fastify.get("/health", async (req, res) => {
