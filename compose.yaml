@@ -3,5 +3,6 @@ services:
   backend:
     build: .
     ports: ["3000:3000"]
-#  redis:
-#    image: "redis:alpine"
+  redis:
+    image: "redis:alpine"
+    ports: ["6379:6379"]

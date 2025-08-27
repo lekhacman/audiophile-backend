@@ -2,6 +2,8 @@ FROM node:lts-alpine
 
 WORKDIR /app
 
+ENV REDIS_HOST=redis
+
 COPY ./dist .
 
 EXPOSE 3000
