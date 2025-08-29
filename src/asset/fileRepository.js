@@ -4,10 +4,11 @@ import fs from "fs/promises";
 
 /**
  * @param {AssetId} assetId
- * @return {Promise<ReadStream>}
+ * @param {{start: number, end: number}} options
+ * @return {ReadStream}
  */
-export function get(assetId) {
-  return Promise.resolve(createReadStream(assetId.toPath()));
+export function readStream(assetId, options) {
+  return createReadStream(assetId.toPath(), options);
 }
 
 export function stat(assetId) {
@@ -20,7 +21,6 @@ export function stat(assetId) {
  * @return {Promise<void>}
  */
 export async function set(assetId, file) {
-  const { ownerId, fileId } = assetId;
-  await fs.mkdir(`${STORAGE_PATH}/${ownerId}`, { recursive: true });
-  file.pipe(createWriteStream(`${STORAGE_PATH}/${ownerId}/${fileId}`));
+  await fs.mkdir(`${STORAGE_PATH}/${assetId.ownerId}`, { recursive: true });
+  file.pipe(createWriteStream(assetId.toPath()));
 }
