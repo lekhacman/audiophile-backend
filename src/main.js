@@ -24,6 +24,8 @@ fastify.register(multipart);
 fastify.get("/v1/health", health);
 fastify.post("/v1/bootstrap", createRoot.options, createRoot);
 fastify.post("/v1/login", login.options, login);
+
+// ----- User management -----
 fastify.post(
   "/v1/user",
   createUser.options,
@@ -39,9 +41,13 @@ fastify.delete(
   authenticate(removeUser, { role: USER_ROLE.ADMIN }),
 );
 fastify.get("/v1/user", authenticate(listUser, { role: USER_ROLE.ADMIN }));
+// ----- End of User management -----
+
+// ----- Asset management -----
 fastify.get("/v1/asset/:id", authenticate(getAsset));
 fastify.get("/v1/asset", authenticate(listAsset));
 fastify.post("/v1/asset", authenticate(uploadAsset));
+// ----- End of Asset management -----
 
 fastify.listen({ port: 3000, host: "0.0.0.0" }, function (err) {
   if (err) {
