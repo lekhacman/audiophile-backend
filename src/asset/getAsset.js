@@ -3,6 +3,7 @@ import fs from "fs/promises";
 import { createReadStream } from "node:fs";
 
 export default async function getAsset(req, res) {
+  const assetId = req.params.fileId;
   const path = `${STORAGE_PATH}/space-Oddity.mp3`;
   const { size } = await fs.stat(path);
   const range = req.range(size);

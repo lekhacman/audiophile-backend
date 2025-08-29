@@ -1,6 +1,6 @@
 import Redis from "ioredis";
 import { REDIS_HOST } from "../config.js";
-import { map } from "ramda";
+import { defaultTo, map } from "ramda";
 
 const db = new Redis(6379, REDIS_HOST);
 
@@ -32,7 +32,7 @@ export function createRepository(options) {
    * @return {Promise<Array>}
    */
   function list() {
-    return db.hvals(key).then(map(JSON.parse));
+    return db.hvals(key).then(defaultTo([])).then(map(JSON.parse));
   }
   /**
    * @typedef {function} SetDoc

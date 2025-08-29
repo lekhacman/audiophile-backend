@@ -16,17 +16,23 @@ export const KEY = {
 
 const secondaryIndex = createRepository({ id: "sessionIdByUsername" });
 
-const sessionRepository = createRepository({ id: "session" });
+const { set, expire, ...sessionRepository } = createRepository({
+  id: "session",
+});
+
 sessionRepository.set = function setSession(id, user) {
-  return Promise.all([
-    sessionRepository.set(id, user),
-    secondaryIndex.set(user.username, id),
-  ]);
+  return Promise.all([set(id, user), secondaryIndex.set(user.username, id)]);
 };
+
+sessionRepository.expire = function expireSession(id, username, seconds) {
+  return Promise.all([expire(id, seconds), secondaryIndex.expire(username, seconds)]);
+};
+
 /**
  * @type {function}
  * @param {string} username
  * @return {Promise<UserSession>}
  */
 sessionRepository.getSessionIdByUsername = secondaryIndex.get;
+
 export default sessionRepository;

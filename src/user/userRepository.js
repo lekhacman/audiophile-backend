@@ -1,5 +1,5 @@
 import { createRepository } from "../client/db.js";
-import { not } from "ramda";
+import { not, pick } from "ramda";
 import crypto from "crypto";
 import { promisify } from "util";
 
@@ -26,15 +26,15 @@ export const USER_ROLE = {
  *
  * @type {Repository & UserRepository}
  */
-const userRepository = createRepository({ id: "user" });
+const { set, ...userRepository } = createRepository({ id: "user" });
 
 userRepository.isEmpty = () => userRepository.size().then(not);
 
-userRepository.set = async function set(id, user) {
-  const saltInHex = crypto.randomBytes(16).toString('hex');
+userRepository.set = async function setUser(id, user) {
+  const saltInHex = crypto.randomBytes(16).toString("hex");
   const hashedInHex = await hash(user.password, saltInHex);
-  return userRepository.set(id, {
-    ...user,
+  return set(id, {
+    ...pick(["password", "role"], user),
     username: id,
     salt: saltInHex,
     password: hashedInHex,
@@ -47,7 +47,13 @@ userRepository.set = async function set(id, user) {
  * @return {Promise<string>}
  */
 export async function hash(password, saltInHex) {
-  const hashed = await pbkdf2(password, Buffer.from(saltInHex, 'hex'), 1e3, 64, "sha512");
+  const hashed = await pbkdf2(
+    password,
+    Buffer.from(saltInHex, "hex"),
+    1e3,
+    64,
+    "sha512",
+  );
   return hashed.toString("hex");
 }
 

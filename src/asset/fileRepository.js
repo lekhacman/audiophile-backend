@@ -3,23 +3,22 @@ import { createReadStream, createWriteStream } from "node:fs";
 import fs from "fs/promises";
 
 /**
- * @param {string} userId
- * @param {string} fileId
+ * @param {AssetId} assetId
  * @return {Promise<ReadStream>}
  */
-export function get(userId, fileId) {
+export function get(assetId) {
   return Promise.resolve(
-    createReadStream(`${STORAGE_PATH}/${userId}/${fileId}`),
+    createReadStream(`${STORAGE_PATH}/${assetId.ownerId}/${assetId.fileId}`),
   );
 }
 
 /**
- * @param {string} userId
- * @param {string} fileId
+ * @param {AssetId} assetId
  * @param {ReadStream} file
  * @return {Promise<void>}
  */
-export async function set(userId, { fileId, file }) {
-  await fs.mkdir(`${STORAGE_PATH}/${userId}/${fileId}`, { recursive: true });
-  file.pipe(createWriteStream(`${STORAGE_PATH}/${userId}/${fileId}`));
+export async function set(assetId, file) {
+  const { ownerId, fileId } = assetId;
+  await fs.mkdir(`${STORAGE_PATH}/${ownerId}`, { recursive: true });
+  file.pipe(createWriteStream(`${STORAGE_PATH}/${ownerId}/${fileId}`));
 }
