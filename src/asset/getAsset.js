@@ -30,3 +30,13 @@ export default async function getAsset(req, res) {
     .status(206)
     .send(fileRepository.readStream(assetId, { start, end }));
 }
+getAsset.options = {
+  schema: {
+    params: {
+      type: "object",
+      properties: {
+        id: { type: "string", maxLength: 36, pattern: "[a-z0-9]+" },
+      },
+    },
+  },
+};

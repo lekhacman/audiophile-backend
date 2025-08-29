@@ -17,9 +17,14 @@ export default async function login(req, res) {
     (await sessionRepository.getSessionIdByUsername(user.username)) ||
     crypto.randomUUID();
   await sessionRepository.set(sessionId, pick(["username", "role"], user));
-  await sessionRepository.expire(sessionId, user.username,5 * 60);
+  await sessionRepository.expire(sessionId, user.username, 5 * 60);
 
-  res.setCookie(KEY.SESSION_ID, sessionId, { httpOnly: true, path: "/" });
-  return res.send(pick(['role'], user));
+  res.setCookie(KEY.SESSION_ID, sessionId, {
+    httpOnly: true,
+    path: "/",
+    secure: true,
+    sameSite: "strict",
+  });
+  return res.send(pick(["role"], user));
 }
-login.options = { schema: {body: userSchema} };
+login.options = { schema: { body: userSchema } };

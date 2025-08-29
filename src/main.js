@@ -38,13 +38,18 @@ fastify.post(
 );
 fastify.delete(
   "/v1/user/:id",
+  removeUser.options,
   authenticate(removeUser, { role: USER_ROLE.ADMIN }),
 );
-fastify.get("/v1/user", authenticate(listUser, { role: USER_ROLE.ADMIN }));
+fastify.get(
+  "/v1/user",
+  listUser.options,
+  authenticate(listUser, { role: USER_ROLE.ADMIN }),
+);
 // ----- End of User management -----
 
 // ----- Asset management -----
-fastify.get("/v1/asset/:id", authenticate(getAsset));
+fastify.get("/v1/asset/:id", getAsset.options, authenticate(getAsset));
 fastify.get("/v1/asset", authenticate(listAsset));
 fastify.post("/v1/asset", authenticate(uploadAsset));
 // ----- End of Asset management -----

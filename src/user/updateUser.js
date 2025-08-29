@@ -1,8 +1,8 @@
-import { passwordSchema } from "./userSchema.js";
+import { passwordSchema, roleSchema, usernameSchema } from "./userSchema.js";
 import userRepository from "./userRepository.js";
 
 export default async function updateUser(req, res) {
-  const user = await userRepository.get(req.params.fileId);
+  const user = await userRepository.get(req.params.id);
   if (!user) {
     return res.status(404).send();
   }
@@ -15,8 +15,15 @@ updateUser.options = {
       type: "object",
       properties: {
         password: passwordSchema,
+        role: roleSchema,
       },
       required: ["password"],
+    },
+    params: {
+      type: "object",
+      properties: {
+        id: usernameSchema,
+      },
     },
   },
 };
