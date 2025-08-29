@@ -35,6 +35,7 @@ userRepository.set = async function set(id, user) {
   const hashedInHex = await hash(user.password, saltInHex);
   return userRepository.set(id, {
     ...user,
+    username: id,
     salt: saltInHex,
     password: hashedInHex,
   });

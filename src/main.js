@@ -8,6 +8,9 @@ import login from "./authentication/login.js";
 import authenticator from "./authentication/authenticator.js";
 import protect from "./authentication/protect.js";
 import { USER_ROLE } from "./user/userRepository.js";
+import listUser from "./user/listUser.js";
+import updateUser from "./user/updateUser.js";
+import removeUser from "./user/removeUser.js";
 
 const fastify = Fastify({ logger: true });
 
@@ -22,6 +25,13 @@ fastify.post(
   createUser.option,
   protect(createUser, { role: USER_ROLE.ADMIN }),
 );
+fastify.post(
+  "/v1/user/:id",
+  updateUser.option,
+  protect(updateUser, { role: USER_ROLE.ADMIN }),
+);
+fastify.delete("/v1/user/:id", protect(removeUser, { role: USER_ROLE.ADMIN }));
+fastify.get("/v1/user", protect(listUser, { role: USER_ROLE.ADMIN }));
 fastify.get("/v1/asset/:id", protect(getAsset));
 
 fastify.listen({ port: 3000, host: "0.0.0.0" }, function (err) {

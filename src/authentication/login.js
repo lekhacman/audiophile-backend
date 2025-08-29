@@ -22,4 +22,4 @@ export default async function login(req, res) {
   res.setCookie(KEY.SESSION_ID, sessionId, { httpOnly: true, path: "/" });
   return res.send("login");
 }
-login.options = { schema: userSchema };
+login.options = { schema: {body: userSchema} };
