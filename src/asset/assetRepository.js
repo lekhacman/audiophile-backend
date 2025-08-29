@@ -1,6 +1,6 @@
 import db, { createRepository } from "../client/db.js";
 import AssetId from "./AssetId.js";
-import { evolve, mergeAll, pipe } from "ramda";
+import { evolve, mergeAll, pick, pipe } from "ramda";
 
 /**
  * @typedef {object} Asset
@@ -27,7 +27,12 @@ assetRepository.set = function setAsset(assetId, asset) {
 assetRepository.findAllByOwnerId = async function findAllByOwnerId(ownerId) {
   return db
     .hscanStream(id, { match: AssetId.of({ ownerId, fileId: "*" }).toString() })
-    .map(pipe(evolve({ 0: AssetId.from, 1: JSON.parse }), mergeAll))
+    .map(
+      pipe(
+        evolve({ 0: pipe(AssetId.from, pick(["fileId"])), 1: JSON.parse }),
+        mergeAll,
+      ),
+    )
     .toArray();
 };
 

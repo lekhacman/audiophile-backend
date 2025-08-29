@@ -7,9 +7,11 @@ import fs from "fs/promises";
  * @return {Promise<ReadStream>}
  */
 export function get(assetId) {
-  return Promise.resolve(
-    createReadStream(`${STORAGE_PATH}/${assetId.ownerId}/${assetId.fileId}`),
-  );
+  return Promise.resolve(createReadStream(assetId.toPath()));
+}
+
+export function stat(assetId) {
+  return fs.stat(assetId.toPath());
 }
 
 /**

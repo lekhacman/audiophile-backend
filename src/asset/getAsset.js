@@ -1,11 +1,11 @@
-import { STORAGE_PATH } from "../config.js";
 import fs from "fs/promises";
 import { createReadStream } from "node:fs";
+import * as fileRepository from "./fileRepository";
+import AssetId from "./AssetId.js";
 
 export default async function getAsset(req, res) {
-  const assetId = req.params.fileId;
-  const path = `${STORAGE_PATH}/space-Oddity.mp3`;
-  const { size } = await fs.stat(path);
+  const assetId = new AssetId(req.user.username, req.params.id);
+  const { size } = await fileRepository.stat(assetId);
   const range = req.range(size);
   if (!range) {
     const err = new Error("Invalid range");

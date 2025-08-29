@@ -1,3 +1,5 @@
+import { STORAGE_PATH } from "../config.js";
+
 export default class AssetId {
   constructor(ownerId, fileId) {
     this.ownerId = ownerId;
@@ -6,6 +8,10 @@ export default class AssetId {
 
   toString() {
     return `${this.ownerId}:${this.fileId}`;
+  }
+
+  toPath() {
+    return `${STORAGE_PATH}/${this.ownerId}/${this.fileId}`;
   }
 
   static of({ ownerId, fileId }) {
