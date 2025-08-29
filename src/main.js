@@ -1,17 +1,29 @@
 import Fastify from "fastify";
-import Redis from "ioredis";
-import fs from "fs/promises";
-
-const redis = new Redis(6379, process.env.REDIS_HOST || "localhost");
-redis.set("mykey", "myvalue");
-
-fs.writeFile("storage/test.txt", "mounting test");
+import range from "fastify-range";
+import health from "./health.js";
+import createRoot from "./user/createRoot.js";
+import getAsset from "./asset/getAsset.js";
+import createUser from "./user/createUser.js";
+import login from "./authentication/login.js";
+import authenticator from "./authentication/authenticator.js";
+import protect from "./authentication/protect.js";
+import { USER_ROLE } from "./user/userRepository.js";
 
 const fastify = Fastify({ logger: true });
-fastify.get("/health", async (req, res) => {
-  const myValue = await redis.get("mykey");
-  res.send({ msg: myValue });
-});
+
+fastify.register(range, { throwOnInvalid: true });
+fastify.register(authenticator);
+
+fastify.get("/v1/health", health);
+fastify.post("/v1/bootstrap", createRoot.option, createRoot);
+fastify.post("/v1/login", login.option, login);
+fastify.post(
+  "/v1/user",
+  createUser.option,
+  protect(createUser, { role: USER_ROLE.ADMIN }),
+);
+fastify.get("/v1/asset/:id", protect(getAsset));
+
 fastify.listen({ port: 3000, host: "0.0.0.0" }, function (err) {
   if (err) {
     fastify.log.error(err);

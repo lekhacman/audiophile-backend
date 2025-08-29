@@ -3,6 +3,7 @@ FROM node:lts-alpine
 WORKDIR /app
 
 ENV REDIS_HOST=audiophile-redis-1
+ENV STORAGE_PATH=storage
 
 COPY ./dist .
 

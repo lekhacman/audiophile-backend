@@ -2,7 +2,6 @@ import terser from "@rollup/plugin-terser";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
-import run from "@rollup/plugin-run";
 
 export default {
   input: "src/main.js",
@@ -14,10 +13,5 @@ export default {
     clearScreen: true,
     include: "src/**",
   },
-  plugins: [
-    nodeResolve(),
-    json(),
-    commonjs(),
-    ...(process.env.ROLLUP_WATCH === "true" ? [run()] : [terser()]),
-  ],
+  plugins: [nodeResolve(), json(), commonjs(), terser()],
 };
