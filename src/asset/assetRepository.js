@@ -1,17 +1,6 @@
 import db, { createRepository } from "../client/db.js";
 import AssetId from "./AssetId.js";
-import {
-  always,
-  evolve,
-  head,
-  identity,
-  ifElse,
-  length,
-  mergeAll,
-  not,
-  pick,
-  pipe,
-} from "ramda";
+import { evolve, map, mergeAll, pipe, splitEvery, toString } from "ramda";
 
 /**
  * @typedef {object} Asset
@@ -31,15 +20,9 @@ assetRepository.set = function setAsset(assetId, asset) {
   return set(assetId.toString(), asset);
 };
 
-const returnEmptyArrayIfOwnerHasEmptyAsset = ifElse(
-  pipe(head, Object.keys, length, not),
-  always([]),
-  identity,
-);
-
 const constructAssetMetadata = pipe(
-  evolve({ 0: pipe(AssetId.from, pick(["fileId"])), 1: JSON.parse }),
-  mergeAll,
+  splitEvery(2),
+  map(pipe(evolve({ 0: AssetId.from, 1: JSON.parse }), mergeAll)),
 );
 
 /**
@@ -48,10 +31,15 @@ const constructAssetMetadata = pipe(
  */
 assetRepository.findAllByOwnerId = async function findAllByOwnerId(ownerId) {
   return db
-    .hscanStream(id, { match: AssetId.of({ ownerId, fileId: "*" }).toString() })
-    .map(constructAssetMetadata)
-    .toArray()
-    .then(returnEmptyArrayIfOwnerHasEmptyAsset);
+    .hscanStream(id, { match: AssetId.of({ ownerId }).toString() })
+    .flatMap(constructAssetMetadata)
+    .toArray();
+};
+assetRepository.removeAssets = function removeAssets(ownerId) {
+  return assetRepository
+    .findAllByOwnerId(ownerId)
+    .then(map(pipe(AssetId.of, toString, assetRepository.remove)))
+    .then((a) => Promise.all(a));
 };
 
 export default assetRepository;

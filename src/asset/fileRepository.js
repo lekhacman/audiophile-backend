@@ -24,3 +24,7 @@ export async function set(assetId, file) {
   await fs.mkdir(`${STORAGE_PATH}/${assetId.ownerId}`, { recursive: true });
   file.pipe(createWriteStream(assetId.toPath()));
 }
+
+export function remove(ownerId) {
+  return fs.rm(`${STORAGE_PATH}/${ownerId}`, { recursive: true, force: true });
+}

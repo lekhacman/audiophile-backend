@@ -10,7 +10,7 @@ export default async function login(req, res) {
     return res.status(404).send("No such user");
   }
   if (user.password !== (await hash(req.body.password, user.salt))) {
-    return res.status(401).send("Wrong password leh");
+    return res.status(400).send("Wrong password leh");
   }
 
   const sessionId =

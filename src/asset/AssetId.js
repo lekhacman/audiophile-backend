@@ -1,7 +1,7 @@
 import { STORAGE_PATH } from "../config.js";
 
 export default class AssetId {
-  constructor(ownerId, fileId) {
+  constructor(ownerId, fileId = "*") {
     this.ownerId = ownerId;
     this.fileId = fileId;
   }

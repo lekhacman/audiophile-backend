@@ -19,7 +19,7 @@ export default async function getAsset(req, res) {
   }
 
   const start = path([0, "start"], range.ranges);
-  const end = Math.min(start + 1e6, size - 1);
+  const end = Math.min(start + 10e6, size - 1);
 
   res.header("Accept-Ranges", "bytes");
   res.header("Content-Ranges", `bytes ${start}-${end}/${size}`);
@@ -35,7 +35,7 @@ getAsset.options = {
     params: {
       type: "object",
       properties: {
-        id: { type: "string", maxLength: 36, pattern: "[a-z0-9]+" },
+        id: { type: "string", maxLength: 36, pattern: "[a-z0-9\\-]+" },
       },
     },
   },

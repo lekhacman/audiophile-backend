@@ -77,7 +77,7 @@ export function createRepository(options) {
     return db.hexpire(key, seconds, "FIELDS", 1, id);
   }
 
-  /**
+    /**
    * @typedef {object} Repository
    * @property {GetDoc} get
    * @property {ExistDoc} exist
